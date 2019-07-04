@@ -24,7 +24,7 @@ public class SimpleAnnotator implements Annotator {
                 //List<SimpleProperty> properties = SimpleUtil.findProperties(project, key);
                 if ("website".equals(key)) {
                     TextRange range = new TextRange(element.getTextRange().getStartOffset() + 7,
-                            element.getTextRange().getStartOffset() + 8);
+                            element.getTextRange().getEndOffset());
                     Annotation annotation = holder.createInfoAnnotation(range, null);
                     annotation.setTextAttributes(DefaultLanguageHighlighterColors.LINE_COMMENT);
                 } else {
@@ -36,7 +36,7 @@ public class SimpleAnnotator implements Annotator {
         } else if (element instanceof PsiReferenceExpression) {
             PsiReferenceExpression referenceExpression = (PsiReferenceExpression) element;
             // referenceExpression.toString();
-            System.out.println(referenceExpression.getCanonicalText());
+            // System.out.println(referenceExpression.getCanonicalText());
 
             if ("player.getName".equals(referenceExpression.getCanonicalText())) {
                 TextRange range = new TextRange(element.getTextRange().getStartOffset(), element.getTextRange().getEndOffset());

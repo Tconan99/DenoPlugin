@@ -18,6 +18,8 @@
         <!-- Add your extensions here -->
         <annotator language="JAVA" implementationClass="com.conan.SimpleAnnotator"/>
         <fileTypeFactory implementation="com.conan.language.SimpleFileTypeFactory"/>
+        <toolWindow id="My Sample Tool Window" icon="/simple.png" anchor="right" factoryClass="com.conan.ui.SimpleToolWindowFactory"/>
+        <lang.psiAugmentProvider implementation="com.conan.psi.SimpleAugmentProvider"/>
     </extensions>
 
     <actions>
