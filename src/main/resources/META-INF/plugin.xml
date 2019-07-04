@@ -1,11 +1,11 @@
 <idea-plugin>
     <id>com.conan.DenoPlugin</id>
-    <name>Plugin display name here</name>
-    <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+    <name>DenoPlugin</name>
+    <vendor email="lovetconan@gmail.com" url="https://zihuatanejo.top">tconan</vendor>
 
     <description><![CDATA[
-    Enter short description for your plugin here.<br>
-    <em>most HTML tags may be used</em>
+        重复造轮子，研究下lombok插件的原理。
+        之前一直没有弄名白原理，当我写完processer后发现ide内依旧是红色，结果才知道是因为ide的psi树还需要我们修改下。
     ]]></description>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
