@@ -85,13 +85,22 @@ public class SimpleAugmentProvider extends PsiAugmentProvider {
                 PsiType psiType = psiField.getType();
                 String typeName = psiType.getCanonicalText();
                 // String getterName = TransformationsUtil.toGetterName(fieldName, psiType.equalsToText("boolean"));
-                String getterName = "get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1, fieldName.length());
+                String commontName = fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1, fieldName.length());
 
-                final PsiMethod valuesMethod = elementFactory.createMethodFromText(
+                String getterName = "get" + commontName;
+                final PsiMethod getterValuesMethod = elementFactory.createMethodFromText(
                         visibility + typeName + " " + getterName + "() { return this." + fieldName + ";}",
                         psiClass);
-                target.add((Psi) new MyLightMethod(manager, valuesMethod, psiClass));
+                target.add((Psi) new MyLightMethod(manager, getterValuesMethod, psiClass));
                 // result = true;
+
+                String setterName = "set" + commontName;
+                final PsiMethod setterValuesMethod = elementFactory.createMethodFromText(
+                        visibility + "void " + setterName + "(" + typeName + " " + fieldName + ") { return this." + fieldName + " = " + fieldName + ";}",
+                        psiClass);
+                target.add((Psi) new MyLightMethod(manager, setterValuesMethod, psiClass));
+
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
