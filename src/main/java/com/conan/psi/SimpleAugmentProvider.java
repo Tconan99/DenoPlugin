@@ -22,14 +22,11 @@ public class SimpleAugmentProvider extends PsiAugmentProvider {
             return Collections.emptyList();
         }
 
-        final List<Psi> result = new ArrayList<Psi>();
+        final List<Psi> result = new ArrayList<>();
         final PsiClass psiClass = (PsiClass) element;
         // System.out.println("Called for class: " + psiClass.getQualifiedName() + " type: " + type.getName());
 
-        if (type.isAssignableFrom(PsiField.class)) {
-            // System.out.println("collect field of class: " + psiClass.getQualifiedName());
-            processPsiClassAnnotations(result, psiClass, type);
-        } else if (type.isAssignableFrom(PsiMethod.class)) {
+        if (type.isAssignableFrom(PsiMethod.class)) {
             // System.out.println("collect methods of class: " + psiClass.getQualifiedName());
             processPsiClassAnnotations(result, psiClass, type);
             // processPsiClassFieldAnnotation(result, psiClass, type);
@@ -39,7 +36,7 @@ public class SimpleAugmentProvider extends PsiAugmentProvider {
     }
 
     private <Psi extends PsiElement> void processPsiClassAnnotations(@NotNull List<Psi> result, @NotNull PsiClass psiClass, @NotNull Class<Psi> type) {
-        System.out.println("Processing class annotations BEGINN: " + psiClass.getQualifiedName());
+        // System.out.println("Processing class annotations BEGINN: " + psiClass.getQualifiedName());
 
         final PsiModifierList modifierList = psiClass.getModifierList();
         if (modifierList != null) {
@@ -47,7 +44,7 @@ public class SimpleAugmentProvider extends PsiAugmentProvider {
                 processClassAnnotation(psiAnnotation, psiClass, result, type);
             }
         }
-        System.out.println("Processing class annotations END: " + psiClass.getQualifiedName());
+        // System.out.println("Processing class annotations END: " + psiClass.getQualifiedName());
     }
 
     private <Psi extends PsiElement> void processClassAnnotation(@NotNull PsiAnnotation psiAnnotation, @NotNull PsiClass psiClass, @NotNull List<Psi> result, @NotNull Class<Psi> type) {
@@ -77,33 +74,37 @@ public class SimpleAugmentProvider extends PsiAugmentProvider {
 
         final String visibility = LombokProcessorUtil.getMethodVisibity(psiAnnotation);
         if (null != visibility) {
-            Project project = psiField.getProject();
+            try {
+                Project project = psiField.getProject();
 
-            PsiClass psiClass = psiField.getContainingClass();
-            PsiManager manager = psiField.getContainingFile().getManager();
-            PsiElementFactory elementFactory = JavaPsiFacade.getInstance(project).getElementFactory();
+                PsiClass psiClass = psiField.getContainingClass();
+                PsiManager manager = psiField.getContainingFile().getManager();
+                PsiElementFactory elementFactory = JavaPsiFacade.getInstance(project).getElementFactory();
 
-            String fieldName = psiField.getName();
-            PsiType psiType = psiField.getType();
-            String typeName = psiType.getCanonicalText();
-            // String getterName = TransformationsUtil.toGetterName(fieldName, psiType.equalsToText("boolean"));
-            String getterName = "get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1, fieldName.length());
+                String fieldName = psiField.getName();
+                PsiType psiType = psiField.getType();
+                String typeName = psiType.getCanonicalText();
+                // String getterName = TransformationsUtil.toGetterName(fieldName, psiType.equalsToText("boolean"));
+                String getterName = "get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1, fieldName.length());
 
-            final PsiMethod valuesMethod = elementFactory.createMethodFromText(
-                    visibility + typeName + " " + getterName + "() { return this." + fieldName + ";}",
-                    psiClass);
-            target.add((Psi) new MyLightMethod(manager, valuesMethod, psiClass));
-            result = true;
+                final PsiMethod valuesMethod = elementFactory.createMethodFromText(
+                        visibility + typeName + " " + getterName + "() { return this." + fieldName + ";}",
+                        psiClass);
+                target.add((Psi) new MyLightMethod(manager, valuesMethod, psiClass));
+                // result = true;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-        psiField.putUserData(READ_KEY, result);
+        // psiField.putUserData(READ_KEY, result);
     }
 
-    private static final String LOMBOK_HAS_IMPLICIT_USAGE_PROPERTY = "lombok.hasImplicitUsage";
-    private static final String LOMBOK_HAS_IMPLICIT_READ_PROPERTY = "lombok.hasImplicitRead";
-    private static final String LOMBOK_HAS_IMPLICIT_WRITE_PROPERTY = "lombok.hasImplicitWrite";
-
-    public static final Key<Boolean> USAGE_KEY = Key.create(LOMBOK_HAS_IMPLICIT_USAGE_PROPERTY);
-    public static final Key<Boolean> READ_KEY = Key.create(LOMBOK_HAS_IMPLICIT_READ_PROPERTY);
-    public static final Key<Boolean> WRITE_KEY = Key.create(LOMBOK_HAS_IMPLICIT_WRITE_PROPERTY);
+//    private static final String LOMBOK_HAS_IMPLICIT_USAGE_PROPERTY = "lombok.hasImplicitUsage";
+//    private static final String LOMBOK_HAS_IMPLICIT_READ_PROPERTY = "lombok.hasImplicitRead";
+//    private static final String LOMBOK_HAS_IMPLICIT_WRITE_PROPERTY = "lombok.hasImplicitWrite";
+//
+//    public static final Key<Boolean> USAGE_KEY = Key.create(LOMBOK_HAS_IMPLICIT_USAGE_PROPERTY);
+//    public static final Key<Boolean> READ_KEY = Key.create(LOMBOK_HAS_IMPLICIT_READ_PROPERTY);
+//    public static final Key<Boolean> WRITE_KEY = Key.create(LOMBOK_HAS_IMPLICIT_WRITE_PROPERTY);
 
 }
